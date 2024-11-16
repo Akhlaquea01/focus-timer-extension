@@ -29,7 +29,15 @@ function startTimer(minutes) {
             updateStorage();
 
             // Open the mini-game in a new tab when the timer is finished
-            chrome.tabs.create({ url: 'mini-game/game.html' });
+            // chrome.tabs.create({ url: 'mini-game/game-list.html' });
+
+            // Open the mini-game popup when the timer is finished
+            chrome.windows.create({
+                url: 'mini-game/game-list.html',
+                type: 'popup',
+                width: 600, // Set the width of the popup
+                height: 600, // Set the height of the popup
+            });
         }
     }, 1000);
 }

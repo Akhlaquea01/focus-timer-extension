@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let focusMinutes = 25; // Default focus time
     let timerUpdateInterval = null; // Interval to update the timer display
 
+    // Fetch and set the focus time from storage when popup loads
+    chrome.storage.local.get('focusMinutes', (data) => {
+        if (data.focusMinutes) {
+            focusMinutes = data.focusMinutes;
+            displayTime(focusMinutes * 60);
+        } else {
+            displayTime(focusMinutes * 60);
+        }
+    });
+
     // Display remaining time
     function displayTime(seconds) {
         const mins = Math.floor(seconds / 60);
@@ -64,9 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set custom time
     setTimeBtn.addEventListener('click', () => {
-        focusMinutes = parseInt(focusTimeInput.value) || 25;
-        timeInputSection.style.display = 'none';
-        displayTime(focusMinutes * 60);
+        focusMinutes = parseInt(focusTimeInput.value) || 25; // Get focus time from input
+        timeInputSection.style.display = 'none'; // Hide input field
+        displayTime(focusMinutes * 60); // Update the display with the custom time
+
+        // Save the custom time in Chrome storage for future sessions
+        chrome.storage.local.set({ focusMinutes: focusMinutes });
 
         // Clear any ongoing interval when setting new time
         clearExistingInterval();

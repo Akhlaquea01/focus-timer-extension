@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .game-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .game-item {
+            margin: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .game-item:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Choose a Game</h1>
+    <p>Take a break by playing one of the following games:</p>
+
+    <ul class="game-list">
+        <li class="game-item" id="catch-game">Catch the Falling Object</li>
+        <li class="game-item" id="game2">Game 2</li>
+    </ul>
+
+    <!-- External JS File -->
+    <script src="game-list.js"></script>
+</body>
+
+</html>
