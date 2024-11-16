@@ -11,15 +11,14 @@
         "service_worker": "background.js"
     },
     "permissions": [
-        "storage"
+        "storage",
+        "notifications",
+        "alarms",
+        "windows"
     ],
     "icons": {
         "16": "assets/icon.png",
         "48": "assets/icon.png",
         "128": "assets/icon.png"
-    },
-    "host_permissions": [
-        "http://*/*",
-        "https://*/*"
-    ]
+    }
 }

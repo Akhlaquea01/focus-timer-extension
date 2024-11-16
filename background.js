@@ -1,5 +1,3 @@
-// background.js
-
 let timerInterval = null;
 let remainingTime = 25 * 60; // Default focus time in seconds (25 minutes)
 let isTimerRunning = false;
@@ -15,7 +13,7 @@ function updateStorage() {
 // Start the timer
 function startTimer(minutes) {
     if (isTimerRunning) return;
-    
+
     remainingTime = minutes * 60; // Set the custom time
     isTimerRunning = true;
     updateStorage();
@@ -23,6 +21,7 @@ function startTimer(minutes) {
     timerInterval = setInterval(() => {
         if (remainingTime > 0) {
             remainingTime--;
+            updateStorage(); // Keep storage updated for popup retrieval
         } else {
             clearInterval(timerInterval);
             isTimerRunning = false;
@@ -51,7 +50,7 @@ function stopTimer() {
     }
 }
 
-// Listen for messages from popup
+// Listen for messages from popup or other components
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'start') {
         startTimer(message.time);
@@ -61,4 +60,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
         sendResponse({ error: 'unknown action' });
     }
+});
+
+// Restore the timer state from storage when the background script starts
+chrome.runtime.onStartup.addListener(() => {
+    chrome.storage.local.get(['remainingTime', 'isTimerRunning'], (data) => {
+        if (data.isTimerRunning) {
+            remainingTime = data.remainingTime;
+            startTimer(Math.floor(remainingTime / 60));
+        }
+    });
+});
+
+// Ensure the background script runs when the extension is installed/updated
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.get(['remainingTime', 'isTimerRunning'], (data) => {
+        if (data.isTimerRunning) {
+            remainingTime = data.remainingTime;
+            startTimer(Math.floor(remainingTime / 60));
+        }
+    });
 });
