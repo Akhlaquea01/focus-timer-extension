@@ -1,5 +1,3 @@
-<!-- popup.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,32 +9,34 @@
 </head>
 
 <body>
-    <div class="container">
-        <!-- Informational section -->
+    <div class="popup-container">
+        <!-- Informational Section -->
         <div class="info">
             <p>Taking regular breaks during work helps improve focus, reduce fatigue, and maintain overall productivity.
                 Remember to recharge your mind for better results!</p>
         </div>
 
-        <h1>Focus Timer</h1>
-
-        <!-- Timer display section -->
-        <div class="timer-display">
-            <span id="time-display">25:00</span>
+        <!-- Timer Display Section -->
+        <div class="time-display-container">
+            <h2>Focus Timer</h2>
+            <div id="time-display" class="time-display">25:00</div>
         </div>
 
-        <!-- Button to change the focus time -->
-        <button id="change-time-btn">Change Focus Time</button>
-
-        <!-- Hidden time input section -->
-        <div class="time-input" id="time-input-section" style="display: none;">
-            <label for="focus-time">Set Focus Time (minutes): </label>
-            <input type="number" id="focus-time" min="1" max="120" value="25">
-            <button id="set-time-btn">Set</button>
+        <!-- Timer Control Buttons -->
+        <div class="buttons-container">
+            <button id="start-timer-btn" class="timer-btn">Start Timer</button>
+            <button id="stop-timer-btn" class="stop-timer-btn">Stop Timer</button>
+            <button id="change-time-btn" class="change-time-btn">Change Time</button>
         </div>
 
-        <button id="start-timer-btn">Start Focus</button>
+        <!-- Time Input Section (hidden by default) -->
+        <div id="time-input-section" class="time-input-section">
+            <label for="focus-time">Set Focus Time (minutes):</label>
+            <input type="number" id="focus-time" min="1" value="25" />
+            <button id="set-time-btn" class="set-time-btn">Set Time</button>
+        </div>
     </div>
+
     <script src="popup.js"></script>
 </body>
 

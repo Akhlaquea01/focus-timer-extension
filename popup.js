@@ -1,8 +1,7 @@
-// popup.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const timeDisplay = document.getElementById('time-display');
     const startTimerBtn = document.getElementById('start-timer-btn');
+    const stopTimerBtn = document.getElementById('stop-timer-btn');
     const changeTimeBtn = document.getElementById('change-time-btn');
     const focusTimeInput = document.getElementById('focus-time');
     const timeInputSection = document.getElementById('time-input-section');
@@ -106,6 +105,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fetch the current timer status on popup load
+    // Stop the timer
+    stopTimerBtn.addEventListener('click', () => {
+        console.log('Stopping timer');
+
+        // Send stop message to background script
+        chrome.runtime.sendMessage({ action: 'stop' }, (response) => {
+            if (chrome.runtime.lastError) {
+                console.error('Error sending stop message:', chrome.runtime.lastError.message);
+            } else {
+                console.log('Stop message sent successfully.');
+                // Clear the ongoing timer interval
+                clearExistingInterval();
+                displayTime(0); // Reset the timer display to 00:00
+            }
+        });
+    });
+
+    // Initial fetch to check the current status
     fetchTimerStatus();
 });

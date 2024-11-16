@@ -1,83 +1,109 @@
-let timerInterval = null;
-let remainingTime = 25 * 60; // Default focus time in seconds (25 minutes)
-let isTimerRunning = false;
+// background.js
 
-// Store timer data in chrome storage
-function updateStorage() {
-    chrome.storage.local.set({
-        remainingTime: remainingTime,
-        isTimerRunning: isTimerRunning,
-    });
-}
+let timerInterval = null;
+let remainingTime = 0; // Time in seconds
+let isTimerRunning = false;
+let focusMinutes = 25; // Default focus time
+
+// Fetch stored focus time from local storage or set default
+chrome.storage.local.get('focusMinutes', (data) => {
+    if (data.focusMinutes) {
+        focusMinutes = data.focusMinutes;
+    }
+});
 
 // Start the timer
-function startTimer(minutes) {
-    if (isTimerRunning) return;
-
-    remainingTime = minutes * 60; // Set the custom time
+function startTimer(timeInMinutes) {
+    remainingTime = timeInMinutes * 60; // Convert minutes to seconds
     isTimerRunning = true;
-    updateStorage();
+    updateTimerInStorage();
 
-    timerInterval = setInterval(() => {
-        if (remainingTime > 0) {
-            remainingTime--;
-            updateStorage(); // Keep storage updated for popup retrieval
-        } else {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            updateStorage();
-
-            // Open the mini-game in a new tab when the timer is finished
-            // chrome.tabs.create({ url: 'mini-game/game-list.html' });
-
-            // Open the mini-game popup when the timer is finished
-            chrome.windows.create({
-                url: 'mini-game/game-list.html',
-                type: 'popup',
-                width: 600, // Set the width of the popup
-                height: 600, // Set the height of the popup
-            });
-        }
-    }, 1000);
+    // Update the timer every second
+    if (timerInterval === null) {
+        timerInterval = setInterval(() => {
+            if (remainingTime > 0) {
+                remainingTime--;
+                updateTimerInStorage();
+            } else {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                isTimerRunning = false;
+                updateTimerInStorage();
+                // Open the mini-game popup when the timer is finished
+                chrome.windows.create({
+                    url: 'mini-game/game-list.html',
+                    type: 'popup',
+                    width: 600, // Set the width of the popup
+                    height: 600, // Set the height of the popup
+                });
+            }
+        }, 1000);
+    }
 }
 
 // Stop the timer
 function stopTimer() {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        updateStorage();
-    }
+    clearInterval(timerInterval);
+    timerInterval = null;
+    isTimerRunning = false;
+    updateTimerInStorage();
 }
 
-// Listen for messages from popup or other components
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'start') {
-        startTimer(message.time);
-        sendResponse({ status: 'timer started' }); // Send response back to the popup
-    } else if (message.action === 'get-status') {
-        sendResponse({ remainingTime, isTimerRunning });
-    } else {
-        sendResponse({ error: 'unknown action' });
+// Update the timer state in Chrome's local storage
+function updateTimerInStorage() {
+    chrome.storage.local.set({
+        remainingTime: remainingTime,
+        isTimerRunning: isTimerRunning,
+        focusMinutes: focusMinutes
+    });
+}
+
+// Listen for messages from the popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    switch (request.action) {
+        case 'start':
+            startTimer(request.time);
+            sendResponse({ status: 'started' });
+            break;
+        case 'stop':
+            stopTimer();
+            sendResponse({ status: 'stopped' });
+            break;
+        case 'get-status':
+            sendResponse({
+                remainingTime: remainingTime,
+                isTimerRunning: isTimerRunning,
+                focusMinutes: focusMinutes
+            });
+            break;
+        case 'set-focus-time':
+            focusMinutes = request.time;
+            updateTimerInStorage();
+            sendResponse({ status: 'focus time updated' });
+            break;
+        default:
+            sendResponse({ status: 'unknown action' });
+            break;
     }
 });
 
-// Restore the timer state from storage when the background script starts
-chrome.runtime.onStartup.addListener(() => {
-    chrome.storage.local.get(['remainingTime', 'isTimerRunning'], (data) => {
-        if (data.isTimerRunning) {
-            remainingTime = data.remainingTime;
-            startTimer(Math.floor(remainingTime / 60));
-        }
-    });
-});
 
-// Ensure the background script runs when the extension is installed/updated
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.local.get(['remainingTime', 'isTimerRunning'], (data) => {
-        if (data.isTimerRunning) {
-            remainingTime = data.remainingTime;
-            startTimer(Math.floor(remainingTime / 60));
-        }
-    });
-});
+// // Restore the timer state from storage when the background script starts
+// chrome.runtime.onStartup.addListener(() => {
+//     chrome.storage.local.get(['remainingTime', 'isTimerRunning'], (data) => {
+//         if (data.isTimerRunning) {
+//             remainingTime = data.remainingTime;
+//             startTimer(Math.floor(remainingTime / 60));
+//         }
+//     });
+// });
+
+// // Ensure the background script runs when the extension is installed/updated
+// chrome.runtime.onInstalled.addListener(() => {
+//     chrome.storage.local.get(['remainingTime', 'isTimerRunning'], (data) => {
+//         if (data.isTimerRunning) {
+//             remainingTime = data.remainingTime;
+//             startTimer(Math.floor(remainingTime / 60));
+//         }
+//     });
+// });
