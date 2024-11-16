@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Focus Timer with Mini-Game",
+    "version": "1.0",
+    "description": "A focus timer extension with built-in mini-games for break time.",
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": "assets/icon.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "icons": {
+        "16": "assets/icon.png",
+        "48": "assets/icon.png",
+        "128": "assets/icon.png"
+    }
+}

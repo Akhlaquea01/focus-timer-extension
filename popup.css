@@ -1,0 +1,78 @@
+/* popup.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    margin: 0;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    width: 340px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.info {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+h1 {
+    color: #43a047;
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.timer-display {
+    font-size: 48px;
+    font-weight: bold;
+    color: #333;
+    margin: 20px 0;
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #43a047;
+}
+
+button {
+    background-color: #43a047;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #388e3c;
+}
+
+#time-input-section {
+    margin-top: 10px;
+    display: none;
+}
+
+#focus-time {
+    width: 80px;
+    padding: 5px;
+    font-size: 16px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}

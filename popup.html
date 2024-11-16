@@ -1,0 +1,43 @@
+<!-- popup.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Timer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Informational section -->
+        <div class="info">
+            <p>Taking regular breaks during work helps improve focus, reduce fatigue, and maintain overall productivity.
+                Remember to recharge your mind for better results!</p>
+        </div>
+
+        <h1>Focus Timer</h1>
+
+        <!-- Timer display section -->
+        <div class="timer-display">
+            <span id="time-display">25:00</span>
+        </div>
+
+        <!-- Button to change the focus time -->
+        <button id="change-time-btn">Change Focus Time</button>
+
+        <!-- Hidden time input section -->
+        <div class="time-input" id="time-input-section" style="display: none;">
+            <label for="focus-time">Set Focus Time (minutes): </label>
+            <input type="number" id="focus-time" min="1" max="120" value="25">
+            <button id="set-time-btn">Set</button>
+        </div>
+
+        <button id="start-timer-btn">Start Focus</button>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
