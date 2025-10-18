@@ -1,24 +1,21 @@
-/* mini-game/game.css */
-body,
-html {
+body {
     margin: 0;
-    padding: 0;
     overflow: hidden;
-    width: 100%;
-    height: 100%;
-    background-color: #f0f0f0;
-    /* Background color */
     font-family: Arial, sans-serif;
+    text-align: center;
 }
 
-#gameCanvas {
-    width: 100%;
-    height: 100%;
+canvas {
     display: block;
-    margin: 0 auto;
-    background-color: #87CEEB;
-    /* Sky blue background */
-    border: 2px solid #333;
+    background: #f0f0f0;
+}
+
+#timerDisplay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #333;
 }
 
 #gameOver {
@@ -27,41 +24,22 @@ html {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 36px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    z-index: 10;
+    color: #d9534f;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
 }
 
-/* Catch Popup Animation */
 #catchPopup {
     position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 128, 0, 0.7);
-    /* Green background */
-    color: white;
-    font-size: 24px;
-    padding: 10px 20px;
-    border-radius: 5px;
     display: none;
-    animation: popupAnimation 0.5s forwards;
+    color: green;
+    font-size: 20px;
+    font-weight: bold;
+    transform: translateX(-50%);
 }
 
-@keyframes popupAnimation {
-    0% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-50%);
-    }
-
-    50% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(-40%);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-50%);
-    }
+#catchPopup::after {
+    content: '+1';
 }

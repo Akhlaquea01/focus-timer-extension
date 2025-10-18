@@ -2,24 +2,32 @@ const canvas = document.getElementById('targetCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('scoreDisplay');
 const gameOverText = document.getElementById('gameOver');
-
-let timerDisplay;
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+const timerDisplay = document.getElementById('timerDisplay');
 
 let target = { x: 100, y: 100, radius: 30 };
 let score = 0;
-let gameActive = true;
+let gameActive = false;
 let timer;
 let moveInterval;
 let timeLeft = 30;
 let moveSpeed = 1200; // ms, initial speed
 let speedIncreaseTimer;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function drawStartScreen() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    ctx.font = '30px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Click to Start', canvas.width / 2, canvas.height / 2);
+}
 
 function drawTarget() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -43,7 +51,11 @@ function startMoveInterval() {
 
 canvas.addEventListener('click', (e) => {
     if (!gameActive) {
-        restartGame();
+        if (gameOverText.style.display === 'block') {
+            restartGame();
+        } else {
+            startGame();
+        }
         return;
     }
     const rect = canvas.getBoundingClientRect();
@@ -58,7 +70,6 @@ canvas.addEventListener('click', (e) => {
 });
 
 function updateTimerDisplay() {
-    if (!timerDisplay) return;
     timerDisplay.textContent = 'Time: ' + timeLeft + 's';
 }
 
@@ -90,6 +101,7 @@ function startGame() {
 
 function endGame() {
     gameActive = false;
+    gameOverText.innerHTML = `Game Over! Your score: ${score}<br>Click to Restart`;
     gameOverText.style.display = 'block';
     clearInterval(moveInterval);
     clearInterval(timer);
@@ -103,20 +115,6 @@ function restartGame() {
     startGame();
 }
 
-// Add timer display element
 window.addEventListener('DOMContentLoaded', () => {
-    timerDisplay = document.createElement('div');
-    timerDisplay.id = 'timerDisplay';
-    timerDisplay.style.position = 'absolute';
-    timerDisplay.style.top = '20px';
-    timerDisplay.style.right = '20px';
-    timerDisplay.style.fontSize = '24px';
-    timerDisplay.style.color = '#333';
-    timerDisplay.style.background = 'rgba(255,255,255,0.7)';
-    timerDisplay.style.padding = '6px 16px';
-    timerDisplay.style.borderRadius = '8px';
-    document.body.appendChild(timerDisplay);
-    updateTimerDisplay();
+    drawStartScreen();
 });
-
-startGame(); 

@@ -8,9 +8,10 @@ const timerDisplay = document.getElementById('timerDisplay');
 
 let score = 0;
 let questionCount = 0;
+let wrongAnswers = 0;
 let currentAnswer = 0;
 let gameActive = true;
-let timeLeft = 7;
+let timeLeft = 15;
 let timerInterval;
 
 function randomInt(min, max) {
@@ -18,8 +19,13 @@ function randomInt(min, max) {
 }
 
 function generateQuestion() {
+    questionCount++;
+    if (questionCount > 10) {
+        endGame();
+        return;
+    }
     const ops = ['+', '-', '×'];
-    const op = ops[randomInt(0, ops.length - 1)];
+    const op = ops[randomInt(0, 2)];
     let a = randomInt(1, 20);
     let b = randomInt(1, 20);
     if (op === '-') {
@@ -32,32 +38,28 @@ function generateQuestion() {
         b = randomInt(1, 10);
         currentAnswer = a * b;
     }
-    questionEl.textContent = `What is ${a} ${op} ${b}?`;
+    questionEl.textContent = `Question ${questionCount}/10: What is ${a} ${op} ${b}?`;
     answerInput.value = '';
     answerInput.focus();
     startTimer();
 }
 
 function submitAnswer() {
-    if (!gameActive) {
-        restartGame();
-        return;
-    }
+    if (!gameActive) return;
     clearInterval(timerInterval);
     const userAnswer = Number(answerInput.value);
     if (userAnswer === currentAnswer) {
         score++;
         feedback.textContent = 'Correct!';
         scoreDisplay.textContent = 'Score: ' + score;
-        setTimeout(() => {
-            feedback.textContent = '';
-            generateQuestion();
-        }, 500);
     } else {
+        wrongAnswers++;
         feedback.textContent = `Wrong! The answer was ${currentAnswer}.`;
-        scoreDisplay.textContent = 'Score: ' + score;
-        setTimeout(endGame, 1000);
     }
+    setTimeout(() => {
+        feedback.textContent = '';
+        generateQuestion();
+    }, 1000);
 }
 
 function updateTimerDisplay() {
@@ -65,7 +67,7 @@ function updateTimerDisplay() {
 }
 
 function startTimer() {
-    timeLeft = 7;
+    timeLeft = 15;
     updateTimerDisplay();
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
@@ -79,23 +81,35 @@ function startTimer() {
 }
 
 function handleTimeout() {
+    wrongAnswers++;
     feedback.textContent = `Time's up! The answer was ${currentAnswer}.`;
-    scoreDisplay.textContent = 'Score: ' + score;
-    setTimeout(endGame, 1000);
+    setTimeout(() => {
+        feedback.textContent = '';
+        generateQuestion();
+    }, 1000);
 }
 
 function endGame() {
     gameActive = false;
+    gameOverText.innerHTML = `Quiz Over!<br>You scored ${score} out of 10 with ${wrongAnswers} wrong answers.<br>Click to Restart`;
     gameOverText.style.display = 'block';
+    questionEl.style.display = 'none';
+    answerInput.style.display = 'none';
+    submitBtn.style.display = 'none';
     feedback.textContent = '';
     clearInterval(timerInterval);
 }
 
 function restartGame() {
     score = 0;
+    questionCount = 0;
+    wrongAnswers = 0;
     gameActive = true;
     scoreDisplay.textContent = 'Score: 0';
     gameOverText.style.display = 'none';
+    questionEl.style.display = 'block';
+    answerInput.style.display = 'block';
+    submitBtn.style.display = 'block';
     feedback.textContent = '';
     generateQuestion();
     clearInterval(timerInterval);
@@ -107,4 +121,4 @@ answerInput.addEventListener('keydown', (e) => {
 });
 gameOverText.addEventListener('click', restartGame);
 
-restartGame(); 
+restartGame();
