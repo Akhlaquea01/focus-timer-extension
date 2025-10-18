@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const catchGameBtn = document.getElementById('catch-game');
     const clickTargetGameBtn = document.getElementById('click-target-game');
     const mathQuizGameBtn = document.getElementById('math-quiz-game');
-    // const game2Btn = document.getElementById('game2');
+    const memoryMatchGameBtn = document.getElementById('memory-match-game');
+    const typingSpeedTestGameBtn = document.getElementById('typing-speed-test-game');
 
     // Event listener for Catch the Falling Object game
     catchGameBtn.addEventListener('click', () => openGame('Catch-the-Falling-Object/game.html'));
@@ -13,6 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for Simple Math Quiz game
     mathQuizGameBtn.addEventListener('click', () => openGame('Simple-Math-Quiz/game.html'));
+
+    // Event listener for Memory Match game
+    memoryMatchGameBtn.addEventListener('click', () => openGame('Memory-Match/game.html'));
+
+    // Event listener for Typing Speed Test game
+    typingSpeedTestGameBtn.addEventListener('click', () => openGame('Typing-Speed-Test/game.html'));
 
     // Event listener for Game 2
     // game2Btn.addEventListener('click', () => openGame('game2.html'));

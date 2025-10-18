@@ -2,48 +2,45 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const gameOverText = document.getElementById('gameOver');
 const catchPopup = document.getElementById('catchPopup');
-const catchSound = document.getElementById('catchSound');  // Reference to catch sound
+const catchSound = document.getElementById('catchSound');
+const timerDisplay = document.getElementById('timerDisplay');
 
-// Set the canvas size to fit the window dynamically
+let basketX = canvas.width / 2 - 25;
+const basketWidth = 50;
+const basketHeight = 10;
+const basketSpeed = 15;
+let fallingObjects = [];
+let score = 0;
+let fallingSpeed = 2;
+let gameInterval;
+let isGameOver = false;
+let timeLeft = 30;
+let timer;
+
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas(); // Set the initial size
+resizeCanvas();
 
-// Game variables
-let basketX = canvas.width / 2 - 20;
-const basketWidth = 50;
-const basketHeight = 10;
-const basketSpeed = 10;
-let fallingObjects = [];
-let score = 0;
-let fallingSpeed = 2; // Speed of falling objects
-let gameInterval;
-let isGameOver = false;
-
-// Create falling objects randomly
 function createFallingObject() {
-    const x = Math.random() * (canvas.width - 10);
-    fallingObjects.push({ x: x, y: 0, caught: false });
+    const x = Math.random() * (canvas.width - 20) + 10;
+    fallingObjects.push({ x: x, y: 0 });
 }
 
-// Update game state
 function updateGame() {
+    if (isGameOver) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw basket
     ctx.fillStyle = '#333';
     ctx.fillRect(basketX, canvas.height - 30, basketWidth, basketHeight);
 
-    // Move and draw falling objects
-    for (let i = 0; i < fallingObjects.length; i++) {
+    for (let i = fallingObjects.length - 1; i >= 0; i--) {
         const obj = fallingObjects[i];
-        obj.y += fallingSpeed; // Speed of falling objects
+        obj.y += fallingSpeed;
 
-        // Draw object with a gradient
         const grad = ctx.createRadialGradient(obj.x, obj.y, 0, obj.x, obj.y, 10);
         grad.addColorStop(0, 'red');
         grad.addColorStop(1, 'yellow');
@@ -53,25 +50,16 @@ function updateGame() {
         ctx.fill();
         ctx.closePath();
 
-        // Check if caught
-        if (
-            obj.y > canvas.height - 30 &&
-            obj.x > basketX &&
-            obj.x < basketX + basketWidth
-        ) {
+        if (obj.y > canvas.height - 40 && obj.y < canvas.height - 20 && obj.x > basketX && obj.x < basketX + basketWidth) {
             fallingObjects.splice(i, 1);
             score++;
-            playCatchEffect(); // Play sound and show popup
+            playCatchEffect(obj.x);
             createFallingObject();
-        }
-
-        // If object goes off-screen without being caught, game over
-        if (obj.y > canvas.height) {
+        } else if (obj.y > canvas.height) {
             endGame();
         }
     }
 
-    // Draw score
     ctx.font = '16px Arial';
     ctx.fillStyle = '#333';
     ctx.fillText('Score: ' + score, 10, 20);
@@ -79,59 +67,69 @@ function updateGame() {
     requestAnimationFrame(updateGame);
 }
 
-// Basket movement
 document.addEventListener('keydown', (e) => {
-    if (isGameOver && e.key !== ' ') return; // Do not allow movement if the game is over
-
     if (e.key === 'ArrowLeft' && basketX > 0) {
         basketX -= basketSpeed;
     } else if (e.key === 'ArrowRight' && basketX < canvas.width - basketWidth) {
         basketX += basketSpeed;
     }
-    if (e.key === ' ') { // Restart the game when pressing Space
-        if (isGameOver) {
-            restartGame();
-        }
+    if (e.key === ' ' && isGameOver) {
+        restartGame();
     }
 });
 
-// Start the game
 function startGame() {
     score = 0;
     fallingObjects = [];
     fallingSpeed = 2;
     isGameOver = false;
-    gameOverText.style.display = 'none'; // Hide the game over text
-    catchPopup.style.display = 'none';  // Hide catch popup
+    timeLeft = 30;
+    gameOverText.style.display = 'none';
+    catchPopup.style.display = 'none';
+    updateTimerDisplay();
     createFallingObject();
     gameInterval = requestAnimationFrame(updateGame);
+    timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
 }
 
-// Play catch effect (sound and popup)
-function playCatchEffect() {
-    catchSound.play();  // Play catch sound
+function playCatchEffect(x) {
+    catchSound.play();
+    catchPopup.style.left = x + 'px';
+    catchPopup.style.top = (canvas.height - 50) + 'px';
+    catchPopup.style.display = 'block';
+    setTimeout(() => {
+        catchPopup.style.display = 'none';
+    }, 300);
     increaseSpeed();
 }
 
-// End the game if the object misses the basket
 function endGame() {
     isGameOver = true;
-    fallingSpeed = 2;
-    gameOverText.style.display = 'block'; // Show "Game Over" text
-    cancelAnimationFrame(gameInterval); // Stop game loop
+    gameOverText.innerHTML = `Game Over! Your score: ${score}<br>Press Space to Restart`;
+    gameOverText.style.display = 'block';
+    cancelAnimationFrame(gameInterval);
+    clearInterval(timer);
 }
 
-// Restart the game
 function restartGame() {
     isGameOver = false;
     startGame();
 }
 
-// Increase speed gradually
 function increaseSpeed() {
-    if (score % 5 === 0 && score > 0) { // Increase speed every 5 score points
+    if (score % 5 === 0 && score > 0) {
         fallingSpeed += 0.5;
     }
 }
 
-startGame(); // Start the game
+function updateTimerDisplay() {
+    timerDisplay.textContent = 'Time: ' + timeLeft + 's';
+}
+
+startGame();

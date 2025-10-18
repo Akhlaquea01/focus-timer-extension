@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+#game-container {
+    max-width: 600px;
+    margin: auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#text-to-type {
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+#typing-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+#game-info {
+    display: flex;
+    justify-content: space-around;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+#restart-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#text-to-type span.correct {
+    color: green;
+}
+
+#text-to-type span.incorrect {
+    color: red;
+    text-decoration: underline;
+}
